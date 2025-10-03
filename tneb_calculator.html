@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="description" content="TNEB Electricity Bill Calculator - Calculate your electricity bill easily with latest tariff rates">
+    <meta name="theme-color" content="#006400">
+    <meta property="og:title" content="TNEB Bill Calculator">
+    <meta property="og:description" content="Calculate your TNEB electricity bill with latest tariff rates">
+    <meta property="og:type" content="website">
+    <title>TNEB Bill Calculator</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap');
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            background: linear-gradient(135deg, #1e3c72, #2a5298);
+            color: #333;
+        }
+
+        .calculator {
+            background-color: rgba(255, 255, 255, 0.95);
+            padding: 20px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            width: 90%;
+            max-width: 380px;
+            backdrop-filter: blur(10px);
+            transition: transform 0.3s ease;
+            margin: 20px auto;
+        }
+
+        @media (max-width: 480px) {
+            .calculator {
+                padding: 15px;
+                margin: 10px auto;
+                width: 95%;
+            }
+
+            .display {
+                font-size: 24px;
+                padding: 15px;
+            }
+
+            button {
+                padding: 12px;
+                font-size: 16px;
+            }
+
+            .title {
+                font-size: 1.2em;
+            }
+
+            .result-container {
+                padding: 15px;
+            }
+
+            .units-display {
+                font-size: 1em;
+            }
+
+            .result-header {
+                padding: 12px 15px;
+            }
+
+            .result-row {
+                padding: 12px 15px;
+            }
+
+            .range-header, .amount-header {
+                font-size: 1em;
+            }
+        }
+
+        .calculator:hover {
+            transform: translateY(-5px);
+        }
+
+        .display {
+            background: linear-gradient(135deg, #00843d, #006400);
+            color: white;
+            padding: 20px;
+            margin-bottom: 25px;
+            border-radius: 15px;
+            text-align: right;
+            font-size: 28px;
+            font-weight: 500;
+            box-shadow: 0 5px 15px rgba(0,100,0,0.2);
+            transition: all 0.3s ease;
+        }
+
+        .display:hover {
+            transform: scale(1.02);
+        }
+
+        .keypad {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        button {
+            padding: 18px;
+            font-size: 20px;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            background: linear-gradient(135deg, #00843d, #006400);
+            color: white;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            background: linear-gradient(135deg, #009245, #006400);
+        }
+
+        button:active {
+            transform: translateY(1px);
+        }
+
+        .clear-btn {
+            background: linear-gradient(135deg, #ff416c, #ff4b2b);
+            font-size: 16px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .clear-btn:hover {
+            background: linear-gradient(135deg, #ff4b2b, #ff416c);
+        }
+
+        .calculate {
+            background: linear-gradient(135deg, #ff416c, #ff4b2b);
+            color: white;
+            width: 100%;
+            padding: 18px;
+            font-size: 20px;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            margin-top: 15px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.3s ease;
+        }
+
+        .calculate:hover {
+            background: linear-gradient(135deg, #ff4b2b, #ff416c);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255,75,43,0.3);
+        }
+
+        .result-container {
+            margin-top: 25px;
+            background-color: #ffffff;
+            padding: 25px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+        }
+
+        .result-container:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.15);
+        }
+
+        .units-display {
+            background: linear-gradient(135deg, #f0f7ff, #e6f0ff);
+            color: #2d3748;
+            padding: 15px 20px;
+            border-radius: 12px;
+            font-size: 1.1em;
+            font-weight: 500;
+            text-align: center;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        .result-table-container {
+            background-color: #ffffff;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        }
+
+        .result-header {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            padding: 15px 20px;
+            background: linear-gradient(135deg, #00843d, #006400);
+            color: white;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        .range-header, .amount-header {
+            font-size: 1.1em;
+        }
+
+        .amount-header {
+            text-align: right;
+        }
+
+        .result-rows {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .result-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            padding: 15px 20px;
+            border-bottom: 1px solid #e9ecef;
+            transition: all 0.2s ease;
+        }
+
+        .result-row:hover {
+            background-color: #f8fafc;
+            transform: translateX(5px);
+        }
+
+        .range-cell {
+            color: #2563eb;
+            font-weight: 500;
+        }
+
+        .amount-cell {
+            text-align: right;
+            color: #dc2626;
+            font-weight: 600;
+        }
+
+        .total-row {
+            background: linear-gradient(135deg, #f8fafc, #f1f5f9);
+            font-weight: 700;
+            border-top: 2px solid #e2e8f0;
+        }
+
+        .total-row .range-cell {
+            color: #1e293b;
+        }
+
+        .total-row .amount-cell {
+            color: #dc2626;
+            font-size: 1.1em;
+        }
+
+        .title {
+            text-align: center;
+            color: #006400;
+            margin-bottom: 25px;
+            font-size: 1.5em;
+            font-weight: 600;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .units-display {
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 10px;
+            font-weight: 500;
+            text-align: center;
+            color: #495057;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        .result {
+            margin-top: 25px;
+            padding: 15px;
+            border-radius: 15px;
+            background-color: #f8f9fa;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+        }
+    </style>
+</head>
+<body>
+    <div class="calculator">
+        <h2 class="title">TNEB Bill Calculator<br>(As per revised tariff on 01.07.2024)</h2>
+        <div class="display" id="display">Amount: 0</div>
+        <div class="keypad">
+            <button onclick="appendNumber('1')">1</button>
+            <button onclick="appendNumber('2')">2</button>
+            <button onclick="appendNumber('3')">3</button>
+            <button onclick="appendNumber('4')">4</button>
+            <button onclick="appendNumber('5')">5</button>
+            <button onclick="appendNumber('6')">6</button>
+            <button onclick="appendNumber('7')">7</button>
+            <button onclick="appendNumber('8')">8</button>
+            <button onclick="appendNumber('9')">9</button>
+            <button onclick="appendNumber('.')">.</button>
+            <button onclick="appendNumber('0')">0</button>
+            <button onclick="clearDisplay()" class="clear-btn">Cut</button>
+        </div>
+        <button class="calculate" onclick="calculateBill()">Calculate</button>
+        <div class="result" id="result"></div>
+    </div>
+
+    <script>
+        let currentAmount = '';
+
+        function appendNumber(num) {
+            if (num === '.' && currentAmount.includes('.')) return;
+            currentAmount += num;
+            updateDisplay();
+        }
+
+        function clearDisplay() {
+            currentAmount = '';
+            updateDisplay();
+            document.getElementById('result').innerHTML = '';
+        }
+
+        function updateDisplay() {
+            document.getElementById('display').innerHTML = 'Amount: ' + (currentAmount || '0');
+        }
+
+        function calculateBill() {
+            const units = parseFloat(currentAmount);
+            let billAmount = 0;
+            let details = `
+            <div class="result-container">
+                <div class="units-display">Units Consumed: ${units}</div>
+                <div class="result-table-container">
+                    <div class="result-header">
+                        <div class="range-header">Range</div>
+                        <div class="amount-header">Amount (₹)</div>
+                    </div>
+                    <div class="result-rows">`;
+
+            if (isNaN(units)) {
+                document.getElementById('result').innerHTML = 'Please enter a valid number';
+                return;
+            }
+
+            let rangeAmounts = [];
+            // Domestic tariff calculation as per new TNEB rules
+            // Calculate for different ranges exactly as per the example
+            rangeAmounts = [];
+            billAmount = 0;
+            
+            // 0-100 Units (Free)
+            rangeAmounts.push(['0 - 100 Units', 0]);
+            
+            // 101-400 Units
+            if (units > 100) {
+                rangeAmounts.push(['101 - 400 Units', 1350]);
+                billAmount += 1350;
+            }
+            
+            // 401-500 Units
+            if (units > 400) {
+                rangeAmounts.push(['401 - 500 Units', 600]);
+                billAmount += 600;
+            }
+            
+            // 501-600 Units
+            if (units > 500) {
+                rangeAmounts.push(['501 - 600 Units', 800]);
+                billAmount += 800;
+            }
+            
+            // 601-800 Units
+            if (units > 600) {
+                rangeAmounts.push(['601 - 800 Units', 1800]);
+                billAmount += 1800;
+            }
+            
+            // 801-1000 Units
+            if (units > 800) {
+                rangeAmounts.push(['801 - 1000 Units', 2000]);
+                billAmount += 2000;
+            }
+            
+            // Above 1000 Units
+            if (units > 1000) {
+                rangeAmounts.push(['1001 - ' + units + ' Units', 3657.70]);
+                billAmount += 3657.70;
+            }
+
+            // No need to recalculate billAmount as it's already calculated above
+
+            // Add each range to the table
+            rangeAmounts.forEach(range => {
+                details += `
+                    <div class="result-row">
+                        <div class="range-cell">${range[0]}</div>
+                        <div class="amount-cell">${parseFloat(range[1]).toFixed(1)}</div>
+                    </div>`;
+            });
+
+            // Add total row
+            details += `
+                    </div>
+                    <div class="result-row total-row">
+                        <div class="range-cell">Total</div>
+                        <div class="amount-cell">${billAmount.toFixed(1)}</div>
+                    </div>
+                </div>
+            </div>`;
+            
+            document.getElementById('result').innerHTML = details;
+        }
+    </script>
+</body>
+</html>
