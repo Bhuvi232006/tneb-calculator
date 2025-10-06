@@ -290,7 +290,7 @@
 <body>
     <div class="calculator">
         <h2 class="title">TNEB Bill Calculator<br>(As per revised tariff on 01.07.2024)</h2>
-        <div class="display" id="display">Amount: 0</div>
+    <div class="display" id="display">Number of Units: 0</div>
         <div class="keypad">
             <button onclick="appendNumber('1')">1</button>
             <button onclick="appendNumber('2')">2</button>
@@ -325,7 +325,7 @@
         }
 
         function updateDisplay() {
-            document.getElementById('display').innerHTML = 'Amount: ' + (currentAmount || '0');
+            document.getElementById('display').innerHTML = 'Number of Units: ' + (currentAmount || '0');
         }
 
         function calculateBill() {
@@ -337,7 +337,7 @@
                 <div class="result-table-container">
                     <div class="result-header">
                         <div class="range-header">Range</div>
-                        <div class="amount-header">Amount (₹)</div>
+                        <div class="amount-header">Number of Units</div>
                     </div>
                     <div class="result-rows">`;
 
